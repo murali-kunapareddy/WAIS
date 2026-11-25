@@ -1,0 +1,14 @@
+{
+  "name": "wa-bridge",
+  "version": "1.0.0",
+  "description": "Local WhatsApp Web bridge for WhatsApp Invite Studio",
+  "main": "bridge.js",
+  "scripts": {
+    "start": "node bridge.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "qrcode": "^1.5.4",
+    "whatsapp-web.js": "^1.34.8"
+  }
+}

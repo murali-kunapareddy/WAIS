@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WhatsApp Invite Studio</title>
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --wa-green: #25D366;
+      --wa-teal: #075E54;
+      --wa-dark: #128C7E;
+      --wa-chat-bg: #EFEAE2;
+      --wa-bubble: #D9FDD3;
+    }
+
+    body {
+      background-color: #f4f6f9;
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #1e293b;
+    }
+
+    .navbar-studio {
+      background: linear-gradient(135deg, #075E54 0%, #128C7E 100%);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .card-studio {
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      border-radius: 0.85rem;
+      box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+      background: #ffffff;
+    }
+
+    .nav-pills-studio .nav-link {
+      color: #475569;
+      font-weight: 600;
+      border-radius: 0.65rem;
+      padding: 0.6rem 1.2rem;
+      transition: all 0.15s ease;
+    }
+
+    .nav-pills-studio .nav-link.active {
+      background-color: var(--wa-teal);
+      color: #fff;
+      box-shadow: 0 3px 8px rgba(7, 94, 84, 0.25);
+    }
+
+    /* Group Filter Pills */
+    .group-pill {
+      cursor: pointer;
+      user-select: none;
+      border-radius: 50rem;
+      padding: 0.35rem 0.85rem;
+      font-size: 0.84rem;
+      font-weight: 500;
+      border: 1px solid #cbd5e1;
+      background-color: #fff;
+      color: #334155;
+      transition: all 0.15s ease;
+    }
+
+    .group-pill:hover {
+      border-color: var(--wa-dark);
+      color: var(--wa-teal);
+    }
+
+    .group-pill.active {
+      background-color: var(--wa-teal);
+      border-color: var(--wa-teal);
+      color: #fff;
+    }
+
+    /* WhatsApp Chat Live Preview Box */
+    .wa-preview-container {
+      background-color: var(--wa-chat-bg);
+      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+      background-size: 18px 18px;
+      border-radius: 0.75rem;
+      padding: 1.25rem;
+      min-height: 250px;
+      border: 1px solid #e2e8f0;
+    }
+
+    .wa-bubble {
+      background-color: var(--wa-bubble);
+      border-radius: 0.75rem 0.75rem 0.2rem 0.75rem;
+      padding: 0.75rem 0.95rem;
+      max-width: 92%;
+      margin-left: auto;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 0.93rem;
+      color: #111b21;
+      position: relative;
+    }
+
+    .wa-media-badge {
+      background: rgba(0, 0, 0, 0.06);
+      border-radius: 0.5rem;
+      padding: 0.6rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.82rem;
+      color: #334155;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .wa-timestamp {
+      font-size: 0.7rem;
+      color: #667781;
+      text-align: right;
+      margin-top: 0.3rem;
+    }
+
+    .qr-box {
+      width: 230px;
+      height: 230px;
+      border-radius: 0.75rem;
+      border: 2px dashed #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      margin: 0 auto;
+    }
+
+    .tag-badge {
+      background-color: #e0f2fe;
+      color: #0369a1;
+      font-weight: 500;
+      font-size: 0.76rem;
+      padding: 0.25em 0.65em;
+      border-radius: 50rem;
+      margin-right: 0.25rem;
+      display: inline-block;
+    }
+
+    .token-chip {
+      cursor: pointer;
+      font-family: monospace;
+      font-size: 0.8rem;
+    }
+
+    .selected-group-chip {
+      background-color: var(--wa-teal);
+      color: #fff;
+      font-size: 0.78rem;
+      font-weight: 500;
+      padding: 0.25rem 0.6rem;
+      border-radius: 50rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .selected-group-chip button {
+      background: transparent;
+      border: 0;
+      color: rgba(255, 255, 255, 0.85);
+      padding: 0;
+      line-height: 1;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+
+    .selected-group-chip button:hover {
+      color: #fff;
+    }
+
+    .group-suggestion-pill {
+      cursor: pointer;
+      border-radius: 50rem;
+      padding: 0.2rem 0.65rem;
+      font-size: 0.78rem;
+      border: 1px solid #cbd5e1;
+      background: #fff;
+      color: #334155;
+      transition: all 0.12s ease;
+    }
+
+    .group-suggestion-pill:hover {
+      border-color: var(--wa-teal);
+      background: #f0fdf4;
+      color: var(--wa-teal);
+    }
+
+    .individual-picker-list {
+      max-height: 220px;
+      overflow-y: auto;
+      background: #fff;
+    }
+
+    .individual-picker-item {
+      cursor: pointer;
+      transition: background-color 0.12s ease;
+    }
+
+    .individual-picker-item:hover {
+      background-color: #f8fafc;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navbar with Live WhatsApp Status Badge -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-studio py-3 mb-4">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="#">
+        <i class="bi bi-whatsapp fs-4"></i>
+        <span>WhatsApp Invite Studio</span>
+        <span class="badge bg-light text-dark fw-normal ms-1" style="font-size: 0.7rem;">Local Windows 11</span>
+      </a>
+
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <div id="waConnectionBadge" class="badge rounded-pill bg-secondary px-3 py-2 d-flex align-items-center gap-2 fs-6">
+          <span class="spinner-grow spinner-grow-sm" id="waPulseSpinner" role="status" aria-hidden="true"></span>
+          <i id="waStatusIcon" class="bi d-none" aria-hidden="true"></i>
+          <span id="waConnectionText">Checking WhatsApp...</span>
+        </div>
+        <button id="waConnectAgainBtn" type="button" class="btn btn-sm btn-warning fw-semibold d-none" onclick="triggerWhatsAppConnect()">
+          <i class="bi bi-plug-fill me-1"></i>Connect again...
+        </button>
+        <button class="btn btn-sm btn-outline-light" onclick="pollBridgeStatus()" title="Refresh WhatsApp Status">
+          <i class="bi bi-arrow-clockwise"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container pb-5">
+
+    <!-- Alert Toast Area -->
+    <div id="alertContainer" class="mb-3"></div>
+
+    <!-- Unlinked / QR Code Scanner Card (automatically shown when WhatsApp is not CONNECTED) -->
+    <div id="qrScannerCard" class="card card-studio mb-4 border-warning d-none">
+      <div class="card-body p-4">
+        <div class="row align-items-center g-4">
+          <div class="col-md-4 text-center">
+            <div class="qr-box p-2">
+              <img id="qrImage" src="" alt="WhatsApp QR Code" class="img-fluid d-none" />
+              <div id="qrPlaceholder" class="text-muted small px-3">
+                <div id="qrPlaceholderSpinner" class="spinner-border text-success mb-2" role="status"></div>
+                <div id="qrPlaceholderText">Waiting for QR code from wa-bridge (port 3001)...</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-8">
+            <div class="d-flex align-items-center gap-2 mb-2">
+              <span class="badge bg-warning text-dark">Action Required</span>
+              <span class="text-muted small" id="bridgeStateDetail">State: DISCONNECTED</span>
+            </div>
+            <h4 class="fw-bold mb-2">Link Your WhatsApp Account</h4>
+            <p class="text-secondary mb-3">
+              Scan this QR code with your phone to send personalized wedding &amp; event invitations directly from your Windows 11 PC.
+            </p>
+            <ol class="small text-secondary mb-3">
+              <li>Open <strong>WhatsApp</strong> on your phone.</li>
+              <li>Tap <strong>Menu <i class="bi bi-three-dots-vertical"></i></strong> or <strong>Settings</strong> and select <strong>Linked Devices</strong>.</li>
+              <li>Tap <strong>Link a Device</strong> and point your camera at the QR code on the left.</li>
+            </ol>
+            <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+              <button id="qrConnectAgainBtn" type="button" class="btn btn-warning btn-sm fw-semibold" onclick="triggerWhatsAppConnect()">
+                <i class="bi bi-plug-fill me-1"></i>Connect again...
+              </button>
+              <span class="text-muted small">Click to start or retry the WhatsApp connection sequence.</span>
+            </div>
+            <div id="bridgeErrorAlert" class="alert alert-danger py-2 px-3 small mb-0 d-none"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-2">
+      <ul class="nav nav-pills nav-pills-studio gap-2" id="studioTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="tab-contacts-btn" data-bs-toggle="pill" data-bs-target="#pane-contacts" type="button" role="tab">
+            <i class="bi bi-people-fill me-1"></i> 1. Contact Manager
+            <span class="badge bg-light text-dark ms-1" id="navTotalContacts">0</span>
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-composer-btn" data-bs-toggle="pill" data-bs-target="#pane-composer" type="button" role="tab">
+            <i class="bi bi-envelope-paper-heart-fill me-1"></i> 2. Invitation Composer
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="tab-monitor-btn" data-bs-toggle="pill" data-bs-target="#pane-monitor" type="button" role="tab">
+            <i class="bi bi-broadcast-pin me-1"></i> 3. Campaign Monitor
+            <span class="badge bg-light text-dark ms-1" id="navActiveCampaigns">0</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="text-muted small d-flex align-items-center gap-3">
+        <span><i class="bi bi-shield-check text-success me-1"></i>15–40s Pacing &amp; 20-Msg Cooldown</span>
+        <span><i class="bi bi-cpu text-primary me-1"></i>Win11 Sleep Guard</span>
+      </div>
+    </div>
+
+    <div class="tab-content">
+
+      <!-- =================================================================== -->
+      <!-- TAB 1: CONTACT MANAGER                                              -->
+      <!-- =================================================================== -->
+      <div class="tab-pane fade show active" id="pane-contacts" role="tabpanel">
+        <div class="row g-4">
+
+          <!-- Left Column: Single Add Form + CSV Upload/Download -->
+          <div class="col-lg-4">
+            <!-- Single Contact Add / Edit Card -->
+            <div class="card card-studio mb-4">
+              <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0" id="contactFormTitle">
+                  <i class="bi bi-person-plus-fill text-success me-2"></i>Add Guest Contact
+                </h5>
+                <button type="button" id="cancelEditBtn" class="btn btn-sm btn-link text-secondary d-none" onclick="resetContactForm()">Cancel</button>
+              </div>
+              <div class="card-body p-4">
+                <form id="contactForm" onsubmit="handleSaveContact(event)">
+                  <input type="hidden" id="contactIdInput" value="" />
+                  <div class="row g-2 mb-3">
+                    <div class="col-4">
+                      <label class="form-label small fw-semibold">Honorific</label>
+                      <input type="text" id="contactHonorific" class="form-control" placeholder="Mr. / Smt." list="honorificOptions" />
+                      <datalist id="honorificOptions">
+                        <option value="Mr."></option>
+                        <option value="Mrs."></option>
+                        <option value="Dr."></option>
+                        <option value="Shri"></option>
+                        <option value="Smt."></option>
+                      </datalist>
+                    </div>
+                    <div class="col-8">
+                      <label class="form-label small fw-semibold">Guest Name <span class="text-danger">*</span></label>
+                      <input type="text" id="contactName" class="form-control" placeholder="e.g. Rajesh Sharma & Family" required />
+                    </div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold">WhatsApp Phone <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="bi bi-telephone"></i></span>
+                      <input type="text" id="contactPhone" class="form-control" placeholder="9876543210 or 919876543210" required />
+                    </div>
+                    <div class="form-text small">10-digit numbers automatically get <code>91</code> (India) prepended.</div>
+                  </div>
+
+                  <div class="mb-3">
+                    <label class="form-label small fw-semibold">Groups</label>
+                    <div id="contactSelectedGroups" class="d-flex flex-wrap gap-1 mb-2"></div>
+                    <div class="input-group input-group-sm">
+                      <span class="input-group-text bg-white"><i class="bi bi-funnel"></i></span>
+                      <input
+                        type="text"
+                        id="contactGroupFilterInput"
+                        class="form-control"
+                        placeholder="Filter existing groups or type a new group..."
+                        oninput="renderContactGroupSuggestions()"
+                        onkeydown="handleContactGroupInputKeydown(event)"
+                      />
+                      <button type="button" class="btn btn-outline-success" onclick="addTypedContactGroup()" title="Add group">
+                        <i class="bi bi-plus-lg"></i> Add
+                      </button>
+                    </div>
+                    <div id="contactGroupSuggestions" class="d-flex flex-wrap gap-1 mt-2 p-2 bg-light rounded border"></div>
+                    <div class="form-text small">Click an existing group to select it, or type a new name and press Enter / Add.</div>
+                  </div>
+
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                      <label class="form-label small fw-semibold mb-1">Notes</label>
+                      <span class="text-muted small" id="contactNotesCounter">0 / 150</span>
+                    </div>
+                    <textarea
+                      id="contactNotes"
+                      class="form-control form-control-sm"
+                      rows="2"
+                      maxlength="150"
+                      placeholder="Optional guest notes (up to 150 characters)..."
+                      oninput="updateNotesCounter()"
+                    ></textarea>
+                  </div>
+
+                  <button type="submit" class="btn btn-success w-100 fw-semibold" id="saveContactBtn">
+                    <i class="bi bi-check2-circle me-1"></i> Save Contact
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Bulk CSV Upload & Sample Download Card -->
+            <div class="card card-studio">
+              <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+                <h5 class="fw-bold mb-0">
+                  <i class="bi bi-file-earmark-spreadsheet-fill text-primary me-2"></i>Bulk CSV Import / Export
+                </h5>
+              </div>
+              <div class="card-body p-4">
+                <p class="text-secondary small mb-3">
+                  Columns: <code>Honorific,Name,Phone,Groups,Notes</code> (Notes up to 150 chars). Duplicate phones are automatically skipped/merged.
+                </p>
+
+                <div class="mb-3">
+                  <input type="file" id="csvFileInput" accept=".csv,text/csv" class="form-control form-control-sm mb-2" />
+                  <button type="button" class="btn btn-primary btn-sm w-100 fw-semibold" onclick="handleCsvUpload()">
+                    <i class="bi bi-cloud-arrow-up-fill me-1"></i> Upload &amp; Import CSV
+                  </button>
+                </div>
+
+                <hr class="my-3" />
+
+                <div class="d-flex gap-2">
+                  <button type="button" class="btn btn-outline-secondary btn-sm w-50" onclick="downloadSampleCsv()">
+                    <i class="bi bi-download me-1"></i> Sample CSV
+                  </button>
+                  <a href="/api/contacts/export" class="btn btn-outline-dark btn-sm w-50">
+                    <i class="bi bi-box-arrow-up-right me-1"></i> Export All CSV
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Group Filter Pills + Contact Table -->
+          <div class="col-lg-8">
+            <div class="card card-studio h-100">
+              <div class="card-body p-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+                  <h5 class="fw-bold mb-0">Guest Directory</h5>
+                  <div class="input-group input-group-sm" style="max-width: 280px;">
+                    <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                    <input type="text" id="contactSearchInput" class="form-control" placeholder="Search name, phone, group, notes..." oninput="renderContactsTable()" />
+                  </div>
+                </div>
+
+                <!-- Group Filter Pills -->
+                <div class="d-flex flex-wrap gap-2 mb-3 pb-2 border-bottom" id="groupFilterPills">
+                  <span class="group-pill active" onclick="selectGroupFilter('')">All Guests</span>
+                </div>
+
+                <!-- Contacts Table -->
+                <div class="table-responsive" style="max-height: 540px;">
+                  <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light sticky-top">
+                      <tr>
+                        <th>Guest</th>
+                        <th>Phone</th>
+                        <th>Groups</th>
+                        <th>Notes</th>
+                        <th class="text-end">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="contactsTableBody">
+                      <tr>
+                        <td colspan="5" class="text-center text-muted py-4">Loading contacts...</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 2: INVITATION COMPOSER                                          -->
+      <!-- =================================================================== -->
+      <div class="tab-pane fade" id="pane-composer" role="tabpanel">
+        <div class="row g-4">
+
+          <!-- Left Column: Composer Form -->
+          <div class="col-lg-7">
+            <div class="card card-studio">
+              <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4">
+                <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                  <div>
+                    <h5 class="fw-bold mb-1">
+                      <i class="bi bi-stars text-warning me-1"></i>Compose Personalized Campaign
+                    </h5>
+                    <p class="text-secondary small mb-0">
+                      Craft your invitation, load &amp; edit a saved campaign, test on your phone, or save as a draft.
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Load Saved / Past Campaign Toolbar -->
+                <div class="input-group input-group-sm mt-3">
+                  <span class="input-group-text bg-light fw-semibold"><i class="bi bi-folder2-open me-1"></i>Saved Campaigns</span>
+                  <select id="savedCampaignSelect" class="form-select">
+                    <option value="">— Select a saved or past campaign to edit &amp; reuse —</option>
+                  </select>
+                  <button type="button" class="btn btn-outline-primary fw-semibold" onclick="loadSelectedSavedCampaign()">
+                    <i class="bi bi-box-arrow-in-down me-1"></i>Load
+                  </button>
+                  <button type="button" class="btn btn-outline-secondary" onclick="resetComposerForm()" title="Reset Composer Form">
+                    <i class="bi bi-arrow-counterclockwise"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="card-body p-4">
+                <div id="composerReuseBanner" class="alert alert-info py-2 px-3 small d-flex justify-content-between align-items-center gap-2 d-none">
+                  <div id="composerReuseBannerText"></div>
+                  <button type="button" class="btn btn-sm btn-outline-info text-dark text-nowrap" onclick="resetComposerForm()">Start Fresh</button>
+                </div>
+                <form id="campaignForm" onsubmit="handleCreateCampaign(event)">
+                  <!-- Campaign Title -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold small">Campaign Name <span class="text-danger">*</span></label>
+                    <input type="text" id="campName" class="form-control" placeholder="e.g. Wedding Save The Date - Bride & Groom Side" required />
+                  </div>
+
+                  <!-- Target Recipients: Groups OR Specific Individuals -->
+                  <div class="mb-3">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                      <label class="form-label fw-semibold small mb-0">Target Recipients</label>
+                      <span class="badge bg-info text-dark" id="dedupPreviewBadge">0 Unique Recipients</span>
+                    </div>
+
+                    <div class="btn-group btn-group-sm w-100 mb-2" role="group" aria-label="Target recipient mode">
+                      <input type="radio" class="btn-check" name="composerTargetMode" id="targetModeGroups" value="groups" checked onchange="setComposerTargetMode('groups')" />
+                      <label class="btn btn-outline-success fw-semibold" for="targetModeGroups">
+                        <i class="bi bi-tags-fill me-1"></i> Select by Groups
+                      </label>
+
+                      <input type="radio" class="btn-check" name="composerTargetMode" id="targetModeIndividuals" value="individuals" onchange="setComposerTargetMode('individuals')" />
+                      <label class="btn btn-outline-success fw-semibold" for="targetModeIndividuals">
+                        <i class="bi bi-person-check-fill me-1"></i> Select Individuals
+                      </label>
+                    </div>
+
+                    <!-- Mode 1: Groups Selection -->
+                    <div id="composerGroupsPanel">
+                      <div class="input-group input-group-sm mb-2">
+                        <span class="input-group-text bg-white"><i class="bi bi-funnel"></i></span>
+                        <input
+                          type="text"
+                          id="composerGroupSearch"
+                          class="form-control"
+                          placeholder="Filter existing groups..."
+                          oninput="renderComposerGroupCheckboxes()"
+                        />
+                      </div>
+                      <div id="composerGroupCheckboxes" class="p-3 bg-light rounded border d-flex flex-wrap gap-3">
+                        <div class="text-muted small">All Contacts (no group filter selected)</div>
+                      </div>
+                      <div class="form-text small">
+                        Leave all unchecked to send to <strong>All Contacts</strong>. Guests in multiple selected groups only receive <strong>1 message</strong>.
+                      </div>
+                    </div>
+
+                    <!-- Mode 2: Individual Contacts Selection with Search -->
+                    <div id="composerIndividualsPanel" class="d-none">
+                      <div class="d-flex flex-wrap gap-2 mb-2">
+                        <div class="input-group input-group-sm flex-grow-1">
+                          <span class="input-group-text bg-white"><i class="bi bi-search"></i></span>
+                          <input
+                            type="text"
+                            id="composerIndividualSearch"
+                            class="form-control"
+                            placeholder="Search individuals by name, phone, group, or notes..."
+                            oninput="renderComposerIndividualsList()"
+                          />
+                        </div>
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="selectAllFilteredIndividuals()">
+                          Select Filtered
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="clearSelectedIndividuals()">
+                          Clear
+                        </button>
+                      </div>
+
+                      <div id="composerSelectedIndividualsChips" class="d-flex flex-wrap gap-1 mb-2"></div>
+
+                      <div id="composerIndividualsList" class="border rounded individual-picker-list">
+                        <div class="text-center text-muted small py-3">Loading contacts...</div>
+                      </div>
+                      <div class="form-text small">
+                        Search and check specific guests who should receive this campaign.
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Message Template with Token Insertion Buttons -->
+                  <div class="mb-3">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-1 gap-1">
+                      <label class="form-label fw-semibold small mb-0">Invitation Message / Caption</label>
+                      <div class="d-flex flex-wrap gap-1">
+                        <span class="badge bg-secondary token-chip" onclick="insertToken('{{Honorific}}')">+ {{Honorific}}</span>
+                        <span class="badge bg-secondary token-chip" onclick="insertToken('{{Name}}')">+ {{Name}}</span>
+                        <span class="badge bg-secondary token-chip" onclick="insertToken('{Warm Greetings|Namaste|Hello}')">+ {Spintax|Options}</span>
+                      </div>
+                    </div>
+                    <textarea id="campTemplate" class="form-control" rows="6" oninput="updateLivePreview()" placeholder="{Namaste|Warm Greetings|Hello} {{Honorific}} {{Name}},&#10;&#10;We cordially invite you and your family to celebrate our wedding ceremony!&#10;&#10;{We look forward to seeing you|Your presence will make our day special}.">{Namaste|Warm Greetings|Hello} {{Honorific}} {{Name}},
+
+We cordially invite you and your family to join us for the auspicious celebration!
+
+{We look forward to welcoming you|Your blessings mean the world to us}.</textarea>
+                  </div>
+
+                  <!-- Local Media File Path -->
+                  <div class="mb-3">
+                    <label class="form-label fw-semibold small">Attachment Media File Path (Optional Image / PDF / Video)</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="bi bi-paperclip"></i></span>
+                      <input type="text" id="campMediaPath" class="form-control" oninput="updateLivePreview()" placeholder='C:\Invites\wedding_card.jpg (quotes stripped automatically)' />
+                    </div>
+                    <div class="form-text small">
+                      Paste a Windows file path (Tip: Shift + Right-click file in Explorer &rarr; <em>Copy as path</em>). Surrounding quotes are stripped automatically.
+                    </div>
+                  </div>
+
+                  <!-- Schedule Date/Time Picker -->
+                  <div class="mb-4">
+                    <label class="form-label fw-semibold small">Schedule Start Date &amp; Time (Optional)</label>
+                    <div class="input-group">
+                      <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                      <input type="datetime-local" id="campScheduledAt" class="form-control" />
+                      <button class="btn btn-outline-secondary" type="button" onclick="document.getElementById('campScheduledAt').value=''">Clear</button>
+                    </div>
+                    <div class="form-text small">
+                      Leave blank to start sending immediately, or pick a future date/time for the background scheduler.
+                    </div>
+                  </div>
+
+                  <div class="d-flex flex-wrap gap-2">
+                    <button type="submit" id="launchCampaignBtn" class="btn btn-success px-4 fw-semibold flex-grow-1">
+                      <i class="bi bi-rocket-takeoff-fill me-1"></i> Create &amp; Launch / Schedule Campaign
+                    </button>
+                    <button type="button" id="updateDraftBtn" class="btn btn-outline-primary fw-semibold d-none" onclick="handleSaveCampaignDraft(true)">
+                      <i class="bi bi-save2 me-1"></i> Update Draft
+                    </button>
+                    <button type="button" id="saveDraftBtn" class="btn btn-outline-secondary fw-semibold" onclick="handleSaveCampaignDraft(false)">
+                      <i class="bi bi-bookmark-plus me-1"></i> Save as Draft
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Live WhatsApp Preview & Send Test Now -->
+          <div class="col-lg-5">
+            <div class="card card-studio mb-4">
+              <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">
+                  <i class="bi bi-eye-fill text-success me-2"></i>Live WhatsApp Preview
+                </h5>
+                <button type="button" class="btn btn-sm btn-outline-secondary" onclick="updateLivePreview()" title="Re-roll Spintax Options">
+                  <i class="bi bi-shuffle me-1"></i> Shuffle Spintax
+                </button>
+              </div>
+              <div class="card-body p-4">
+                <!-- Sample Guest Inputs for Live Preview -->
+                <div class="row g-2 mb-3">
+                  <div class="col-4">
+                    <label class="form-label small text-muted mb-1">Sample Honorific</label>
+                    <input type="text" id="previewHonorific" class="form-control form-control-sm" value="Shri" oninput="updateLivePreview()" />
+                  </div>
+                  <div class="col-8">
+                    <label class="form-label small text-muted mb-1">Sample Guest Name</label>
+                    <input type="text" id="previewName" class="form-control form-control-sm" value="Rajesh Sharma & Family" oninput="updateLivePreview()" />
+                  </div>
+                </div>
+
+                <!-- WhatsApp Chat Mockup -->
+                <div class="wa-preview-container d-flex flex-column justify-content-end">
+                  <div class="wa-bubble">
+                    <div id="previewMediaBox" class="wa-media-badge d-none">
+                      <i class="bi bi-file-earmark-image fs-5 text-success"></i>
+                      <span id="previewMediaText" class="text-truncate"></span>
+                    </div>
+                    <div id="previewMessageText"></div>
+                    <div class="wa-timestamp">12:00 PM <i class="bi bi-check2-all text-primary"></i></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Send Test Now Card -->
+            <div class="card card-studio border-primary">
+              <div class="card-body p-4">
+                <h6 class="fw-bold mb-2">
+                  <i class="bi bi-send-check-fill text-primary me-1"></i> Send Test to Myself
+                </h6>
+                <p class="text-secondary small mb-3">
+                  Verify how your message &amp; media card look on WhatsApp before launching the campaign.
+                </p>
+                <div class="input-group mb-2">
+                  <span class="input-group-text"><i class="bi bi-whatsapp text-success"></i></span>
+                  <input type="text" id="testPhoneInput" class="form-control" placeholder="Your WhatsApp number (optional if linked)" />
+                  <button class="btn btn-primary fw-semibold" type="button" id="sendTestBtn" onclick="handleSendTestNow()">
+                    <i class="bi bi-send-fill me-1"></i> Send Test Now
+                  </button>
+                </div>
+                <div class="form-text small">
+                  Uses the sample Honorific &amp; Name above. Leave phone blank to auto-send to your connected WhatsApp number.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- TAB 3: CAMPAIGN MONITOR                                             -->
+      <!-- =================================================================== -->
+      <div class="tab-pane fade" id="pane-monitor" role="tabpanel">
+        <div class="row g-4">
+
+          <!-- Left Column: Campaigns List -->
+          <div class="col-lg-5">
+            <div class="card card-studio h-100">
+              <div class="card-header bg-transparent border-0 pt-4 pb-0 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold mb-0">Campaigns</h5>
+                <button class="btn btn-sm btn-outline-secondary" onclick="loadCampaigns()">
+                  <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+                </button>
+              </div>
+              <div class="card-body p-4">
+                <div id="campaignsListContainer" class="d-flex flex-column gap-3">
+                  <div class="text-center text-muted py-4">No campaigns yet.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Selected Campaign Per-Recipient Monitor -->
+          <div class="col-lg-7">
+            <div class="card card-studio h-100">
+              <div class="card-body p-4" id="campaignDetailContainer">
+                <div class="text-center text-muted py-5">
+                  <i class="bi bi-bar-chart-steps fs-1 d-block mb-2"></i>
+                  Select a campaign on the left to inspect per-recipient delivery status, exact error logs, and retry failed sends.
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bootstrap 5.3 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    // =========================================================================
+    // STATE
+    // =========================================================================
+    let allContacts = [];
+    let allGroups = [];
+    let selectedGroupFilter = '';
+    let campaigns = [];
+    let activeCampaignId = null;
+    let isConnectingWhatsApp = false;
+    let contactFormGroups = [];
+    let composerTargetMode = 'groups';
+    let selectedComposerGroups = new Set();
+    let selectedComposerContactIds = new Set();
+    let loadedCampaignSource = null;
+
+    // =========================================================================
+    // INITIALIZATION & POLLING
+    // =========================================================================
+    document.addEventListener('DOMContentLoaded', () => {
+      updateNotesCounter();
+      renderContactSelectedGroups();
+      renderContactGroupSuggestions();
+      updateLivePreview();
+      pollBridgeStatus();
+      loadContactsAndGroups();
+      loadCampaigns();
+
+      // Poll WhatsApp status and active campaign progress every 3 seconds
+      setInterval(() => {
+        pollBridgeStatus();
+        loadCampaigns(true);
+      }, 3000);
+    });
+
+    function showAlert(message, type = 'success') {
+      const container = document.getElementById('alertContainer');
+      const id = 'alert-' + Date.now();
+      container.insertAdjacentHTML('beforeend', `
+        <div id="${id}" class="alert alert-${type} alert-dismissible fade show shadow-sm py-2 px-3 mb-2" role="alert">
+          ${escapeHtml(message)}
+          <button type="button" class="btn-close py-2" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `);
+      setTimeout(() => {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+      }, 6000);
+    }
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    // =========================================================================
+    // WHATSAPP BRIDGE STATUS, RECONNECT & QR SCANNER
+    // =========================================================================
+    function setWaStatusIndicator({ spinning = false, iconClass = '' }) {
+      const spinner = document.getElementById('waPulseSpinner');
+      const icon = document.getElementById('waStatusIcon');
+
+      if (spinning) {
+        spinner.classList.remove('d-none');
+        icon.className = 'bi d-none';
+      } else {
+        spinner.classList.add('d-none');
+        icon.className = iconClass ? `bi ${iconClass}` : 'bi d-none';
+      }
+    }
+
+    function setConnectButtonsState({ show = false, busy = false }) {
+      const navBtn = document.getElementById('waConnectAgainBtn');
+      const qrBtn = document.getElementById('qrConnectAgainBtn');
+      const labelHtml = busy
+        ? `<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>Connecting...`
+        : `<i class="bi bi-plug-fill me-1"></i>Connect again...`;
+
+      if (navBtn) {
+        navBtn.classList.toggle('d-none', !show);
+        navBtn.disabled = busy;
+        navBtn.innerHTML = labelHtml;
+      }
+      if (qrBtn) {
+        qrBtn.disabled = busy;
+        qrBtn.innerHTML = labelHtml;
+      }
+    }
+
+    async function triggerWhatsAppConnect() {
+      if (isConnectingWhatsApp) return;
+
+      isConnectingWhatsApp = true;
+      const badge = document.getElementById('waConnectionBadge');
+      const text = document.getElementById('waConnectionText');
+      const qrCard = document.getElementById('qrScannerCard');
+      const qrImg = document.getElementById('qrImage');
+      const qrPlaceholder = document.getElementById('qrPlaceholder');
+      const qrPlaceholderSpinner = document.getElementById('qrPlaceholderSpinner');
+      const qrPlaceholderText = document.getElementById('qrPlaceholderText');
+      const stateDetail = document.getElementById('bridgeStateDetail');
+      const errAlert = document.getElementById('bridgeErrorAlert');
+
+      badge.className = 'badge rounded-pill bg-info text-dark px-3 py-2 d-flex align-items-center gap-2 fs-6';
+      setWaStatusIndicator({ spinning: true });
+      text.textContent = 'Connecting to WhatsApp...';
+      setConnectButtonsState({ show: true, busy: true });
+
+      qrCard.classList.remove('d-none');
+      qrImg.classList.add('d-none');
+      qrPlaceholder.classList.remove('d-none');
+      qrPlaceholderSpinner.classList.remove('d-none');
+      qrPlaceholderText.textContent = 'Starting WhatsApp connection sequence...';
+      stateDetail.textContent = 'State: INITIALIZING';
+      errAlert.classList.add('d-none');
+
+      try {
+        const res = await fetch('/api/bridge/connect', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({})
+        });
+        const data = await res.json().catch(() => ({}));
+
+        if (!res.ok || data.success === false) {
+          showAlert(data.error || 'Could not start WhatsApp connection sequence.', 'danger');
+        } else if (data.alreadyConnected || data.connected) {
+          showAlert('WhatsApp is already connected and ready.', 'success');
+        } else {
+          showAlert(data.message || 'WhatsApp connection sequence triggered. Please wait or scan the QR code.', 'info');
+        }
+      } catch (err) {
+        showAlert('Failed to trigger WhatsApp connection: ' + err.message, 'danger');
+      } finally {
+        isConnectingWhatsApp = false;
+        setConnectButtonsState({ show: true, busy: false });
+        await pollBridgeStatus();
+      }
+    }
+
+    async function pollBridgeStatus() {
+      if (isConnectingWhatsApp) return;
+
+      const badge = document.getElementById('waConnectionBadge');
+      const text = document.getElementById('waConnectionText');
+      const qrCard = document.getElementById('qrScannerCard');
+      const qrImg = document.getElementById('qrImage');
+      const qrPlaceholder = document.getElementById('qrPlaceholder');
+      const qrPlaceholderSpinner = document.getElementById('qrPlaceholderSpinner');
+      const qrPlaceholderText = document.getElementById('qrPlaceholderText');
+      const stateDetail = document.getElementById('bridgeStateDetail');
+      const errAlert = document.getElementById('bridgeErrorAlert');
+
+      try {
+        const res = await fetch('/api/bridge/status');
+        const data = await res.json();
+        const state = data.state || 'DISCONNECTED';
+        stateDetail.textContent = `State: ${state}`;
+
+        if (data.connected || state === 'CONNECTED') {
+          badge.className = 'badge rounded-pill bg-success px-3 py-2 d-flex align-items-center gap-2 fs-6';
+          setWaStatusIndicator({ spinning: false, iconClass: 'bi-check-circle-fill' });
+          text.textContent = data.user ? `WhatsApp is ready (+${data.user})` : 'WhatsApp is ready...';
+          qrCard.classList.add('d-none');
+          setConnectButtonsState({ show: false, busy: false });
+        } else {
+          qrCard.classList.remove('d-none');
+          setConnectButtonsState({ show: true, busy: false });
+
+          if (state === 'QR_READY' && (data.qrDataUrl || data.qr)) {
+            badge.className = 'badge rounded-pill bg-warning text-dark px-3 py-2 d-flex align-items-center gap-2 fs-6';
+            setWaStatusIndicator({ spinning: false, iconClass: 'bi-qr-code-scan' });
+            text.textContent = 'Scan QR to Link WhatsApp';
+            qrImg.src = data.qrDataUrl || data.qr;
+            qrImg.classList.remove('d-none');
+            qrPlaceholder.classList.add('d-none');
+          } else if (state === 'AUTHENTICATED' || state === 'INITIALIZING') {
+            badge.className = 'badge rounded-pill bg-info text-dark px-3 py-2 d-flex align-items-center gap-2 fs-6';
+            setWaStatusIndicator({ spinning: true });
+            text.textContent = state === 'AUTHENTICATED' ? 'Authenticated (Syncing...)' : 'Connecting to WhatsApp...';
+            qrImg.classList.add('d-none');
+            qrPlaceholder.classList.remove('d-none');
+            qrPlaceholderSpinner.classList.remove('d-none');
+            qrPlaceholderText.textContent = state === 'AUTHENTICATED'
+              ? 'Authenticated! Syncing your WhatsApp session...'
+              : 'Launching headless browser & preparing WhatsApp session...';
+          } else {
+            badge.className = 'badge rounded-pill bg-danger px-3 py-2 d-flex align-items-center gap-2 fs-6';
+            setWaStatusIndicator({ spinning: false, iconClass: 'bi-exclamation-triangle-fill' });
+            text.textContent = state === 'BRIDGE_OFFLINE'
+              ? 'WhatsApp Offline (Bridge Stopped)'
+              : state === 'AUTH_FAILURE'
+                ? 'WhatsApp Auth Failed'
+                : 'WhatsApp Disconnected';
+            qrImg.classList.add('d-none');
+            qrPlaceholder.classList.remove('d-none');
+            qrPlaceholderSpinner.classList.add('d-none');
+            qrPlaceholderText.textContent = state === 'BRIDGE_OFFLINE'
+              ? 'WhatsApp Bridge (port 3001) is offline. Click "Connect again..." to start it.'
+              : 'WhatsApp is not connected. Click "Connect again..." to start the connection sequence.';
+          }
+
+          if (data.error) {
+            errAlert.textContent = data.error;
+            errAlert.classList.remove('d-none');
+          } else {
+            errAlert.classList.add('d-none');
+          }
+        }
+      } catch (err) {
+        badge.className = 'badge rounded-pill bg-danger px-3 py-2 d-flex align-items-center gap-2 fs-6';
+        setWaStatusIndicator({ spinning: false, iconClass: 'bi-wifi-off' });
+        text.textContent = 'Backend Unreachable';
+        setConnectButtonsState({ show: true, busy: false });
+      }
+    }
+
+    // =========================================================================
+    // CONTACTS, DYNAMIC GROUP PICKER, NOTES & FILTER PILLS
+    // =========================================================================
+    async function loadContactsAndGroups() {
+      try {
+        const [contactsRes, groupsRes] = await Promise.all([
+          fetch('/api/contacts'),
+          fetch('/api/groups')
+        ]);
+        allContacts = await contactsRes.json();
+        allGroups = await groupsRes.json();
+
+        // Keep composer selections synced with existing contacts & groups
+        const validIds = new Set(allContacts.map(c => c.id));
+        selectedComposerContactIds = new Set(
+          Array.from(selectedComposerContactIds).filter(id => validIds.has(id))
+        );
+        const validGroupMap = new Map(allGroups.map(g => [g.name.toLowerCase(), g.name]));
+        selectedComposerGroups = new Set(
+          Array.from(selectedComposerGroups)
+            .map(g => validGroupMap.get(g.toLowerCase()))
+            .filter(Boolean)
+        );
+
+        document.getElementById('navTotalContacts').textContent = allContacts.length;
+        renderGroupFilterPills();
+        renderContactsTable();
+        renderContactGroupSuggestions();
+        renderComposerGroupCheckboxes();
+        renderComposerIndividualsList();
+        renderComposerSelectedIndividualsChips();
+        updateRecipientDeduplicationPreview();
+      } catch (err) {
+        showAlert('Failed to load contacts: ' + err.message, 'danger');
+      }
+    }
+
+    function updateNotesCounter() {
+      const notesEl = document.getElementById('contactNotes');
+      const counterEl = document.getElementById('contactNotesCounter');
+      if (!notesEl || !counterEl) return;
+      const len = notesEl.value.length;
+      counterEl.textContent = `${len} / 150`;
+      counterEl.classList.toggle('text-danger', len >= 150);
+      counterEl.classList.toggle('text-muted', len < 150);
+    }
+
+    function renderContactSelectedGroups() {
+      const container = document.getElementById('contactSelectedGroups');
+      if (!container) return;
+      if (contactFormGroups.length === 0) {
+        container.innerHTML = `<span class="text-muted small">No groups selected yet.</span>`;
+        return;
+      }
+      container.innerHTML = contactFormGroups.map(g => `
+        <span class="selected-group-chip">
+          ${escapeHtml(g)}
+          <button type="button" onclick="removeContactGroup('${encodeURIComponent(g)}')" aria-label="Remove ${escapeHtml(g)}">&times;</button>
+        </span>
+      `).join('');
+    }
+
+    function renderContactGroupSuggestions() {
+      const container = document.getElementById('contactGroupSuggestions');
+      const input = document.getElementById('contactGroupFilterInput');
+      if (!container || !input) return;
+
+      const query = input.value.trim();
+      const queryLower = query.toLowerCase();
+      const selectedLower = new Set(contactFormGroups.map(g => g.toLowerCase()));
+
+      const matchingExisting = allGroups.filter(g =>
+        !selectedLower.has(g.name.toLowerCase()) &&
+        (!queryLower || g.name.toLowerCase().includes(queryLower))
+      );
+
+      let html = matchingExisting.map(g => `
+        <button
+          type="button"
+          class="group-suggestion-pill"
+          onclick="selectExistingContactGroup('${encodeURIComponent(g.name)}')"
+          title="Add existing group"
+        >
+          <i class="bi bi-plus-circle me-1 text-success"></i>${escapeHtml(g.name)}
+          <span class="text-muted">(${g.count})</span>
+        </button>
+      `).join('');
+
+      const exactExistingMatch = allGroups.some(g => g.name.toLowerCase() === queryLower);
+      const alreadySelected = selectedLower.has(queryLower);
+
+      if (query && !exactExistingMatch && !alreadySelected && !query.includes(',')) {
+        html += `
+          <button
+            type="button"
+            class="group-suggestion-pill border-success text-success fw-semibold"
+            onclick="addTypedContactGroup()"
+          >
+            <i class="bi bi-plus-circle-dotted me-1"></i>Create new group "${escapeHtml(query)}"
+          </button>
+        `;
+      }
+
+      if (!html) {
+        html = allGroups.length === 0
+          ? `<span class="text-muted small">No existing groups yet. Type a name above to create one.</span>`
+          : `<span class="text-muted small">${query ? 'No unselected existing groups match.' : 'All existing groups are already selected.'}</span>`;
+      }
+
+      container.innerHTML = html;
+    }
+
+    function addContactGroup(rawText) {
+      if (!rawText) return;
+      const parts = String(rawText)
+        .split(/[,;]+/)
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      const existingMap = new Map(allGroups.map(g => [g.name.toLowerCase(), g.name]));
+      const selectedLower = new Set(contactFormGroups.map(g => g.toLowerCase()));
+
+      for (const part of parts) {
+        const lower = part.toLowerCase();
+        if (selectedLower.has(lower)) continue;
+        const canonical = existingMap.get(lower) || part;
+        contactFormGroups.push(canonical);
+        selectedLower.add(lower);
+      }
+
+      renderContactSelectedGroups();
+      renderContactGroupSuggestions();
+    }
+
+    function selectExistingContactGroup(encodedName) {
+      const name = decodeURIComponent(encodedName);
+      addContactGroup(name);
+      const input = document.getElementById('contactGroupFilterInput');
+      if (input) {
+        input.value = '';
+        input.focus();
+      }
+      renderContactGroupSuggestions();
+    }
+
+    function addTypedContactGroup() {
+      const input = document.getElementById('contactGroupFilterInput');
+      if (!input) return;
+      const val = input.value.trim();
+      if (!val) return;
+      addContactGroup(val);
+      input.value = '';
+      renderContactGroupSuggestions();
+      input.focus();
+    }
+
+    function removeContactGroup(encodedName) {
+      const name = decodeURIComponent(encodedName);
+      contactFormGroups = contactFormGroups.filter(g => g.toLowerCase() !== name.toLowerCase());
+      renderContactSelectedGroups();
+      renderContactGroupSuggestions();
+    }
+
+    function handleContactGroupInputKeydown(e) {
+      if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        addTypedContactGroup();
+      }
+    }
+
+    function renderGroupFilterPills() {
+      const container = document.getElementById('groupFilterPills');
+      let html = `<span class="group-pill ${selectedGroupFilter === '' ? 'active' : ''}" onclick="selectGroupFilter('')">
+        All Guests <span class="badge bg-secondary ms-1">${allContacts.length}</span>
+      </span>`;
+
+      for (const g of allGroups) {
+        const isActive = selectedGroupFilter.toLowerCase() === g.name.toLowerCase();
+        html += `<span class="group-pill ${isActive ? 'active' : ''}" onclick="selectGroupFilter(decodeURIComponent('${encodeURIComponent(g.name)}'))">
+          ${escapeHtml(g.name)} <span class="badge bg-secondary ms-1">${g.count}</span>
+        </span>`;
+      }
+      container.innerHTML = html;
+    }
+
+    function selectGroupFilter(groupName) {
+      selectedGroupFilter = groupName;
+      renderGroupFilterPills();
+      renderContactsTable();
+    }
+
+    function renderContactsTable() {
+      const tbody = document.getElementById('contactsTableBody');
+      const search = (document.getElementById('contactSearchInput').value || '').trim().toLowerCase();
+
+      const filtered = allContacts.filter(c => {
+        if (selectedGroupFilter) {
+          const list = (c.groupList || []).map(x => x.toLowerCase());
+          if (!list.includes(selectedGroupFilter.toLowerCase())) return false;
+        }
+        if (search) {
+          const hay = `${c.honorific} ${c.name} ${c.phone} ${c.groups} ${c.notes || ''}`.toLowerCase();
+          if (!hay.includes(search)) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-muted py-4">No matching contacts found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map(c => {
+        const tagsHtml = (c.groupList || []).length > 0
+          ? c.groupList.map(g => `<span class="tag-badge">${escapeHtml(g)}</span>`).join('')
+          : `<span class="text-muted small">—</span>`;
+
+        const notesText = (c.notes || '').trim();
+        const notesHtml = notesText
+          ? `<div class="small text-secondary text-truncate" style="max-width: 200px;" title="${escapeHtml(notesText)}">${escapeHtml(notesText)}</div>`
+          : `<span class="text-muted small">—</span>`;
+
+        return `
+          <tr>
+            <td>
+              <span class="text-secondary small">${escapeHtml(c.honorific)}</span>
+              <span class="fw-semibold">${escapeHtml(c.name)}</span>
+            </td>
+            <td><code>${escapeHtml(c.phone)}</code></td>
+            <td>${tagsHtml}</td>
+            <td>${notesHtml}</td>
+            <td class="text-end text-nowrap">
+              <button class="btn btn-sm btn-outline-primary me-1" onclick="editContact(${c.id})" title="Edit">
+                <i class="bi bi-pencil"></i>
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="deleteContact(${c.id})" title="Delete">
+                <i class="bi bi-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function handleSaveContact(e) {
+      e.preventDefault();
+
+      // Commit any pending text left in the group filter input before saving
+      const pendingGroupInput = document.getElementById('contactGroupFilterInput');
+      if (pendingGroupInput && pendingGroupInput.value.trim()) {
+        addContactGroup(pendingGroupInput.value.trim());
+        pendingGroupInput.value = '';
+      }
+
+      const id = document.getElementById('contactIdInput').value;
+      const notes = document.getElementById('contactNotes').value.trim();
+      if (notes.length > 150) {
+        showAlert('Notes cannot exceed 150 characters.', 'warning');
+        return;
+      }
+
+      const payload = {
+        honorific: document.getElementById('contactHonorific').value.trim(),
+        name: document.getElementById('contactName').value.trim(),
+        phone: document.getElementById('contactPhone').value.trim(),
+        groups: contactFormGroups.join(','),
+        groupList: [...contactFormGroups],
+        notes
+      };
+
+      const url = id ? `/api/contacts/${id}` : '/api/contacts';
+      const method = id ? 'PUT' : 'POST';
+
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showAlert(data.error || 'Could not save contact.', 'danger');
+          return;
+        }
+        showAlert(id ? 'Contact updated.' : `Added ${data.name} (${data.phone}).`, 'success');
+        resetContactForm();
+        await loadContactsAndGroups();
+      } catch (err) {
+        showAlert('Error saving contact: ' + err.message, 'danger');
+      }
+    }
+
+    function editContact(id) {
+      const c = allContacts.find(x => x.id === id);
+      if (!c) return;
+      document.getElementById('contactIdInput').value = c.id;
+      document.getElementById('contactHonorific').value = c.honorific || '';
+      document.getElementById('contactName').value = c.name || '';
+      document.getElementById('contactPhone').value = c.phone || '';
+      document.getElementById('contactNotes').value = c.notes || '';
+      document.getElementById('contactGroupFilterInput').value = '';
+      contactFormGroups = [...(c.groupList || [])];
+      renderContactSelectedGroups();
+      renderContactGroupSuggestions();
+      updateNotesCounter();
+
+      document.getElementById('contactFormTitle').innerHTML = `<i class="bi bi-pencil-square text-primary me-2"></i>Edit Contact`;
+      document.getElementById('saveContactBtn').innerHTML = `<i class="bi bi-check2-circle me-1"></i> Update Contact`;
+      document.getElementById('cancelEditBtn').classList.remove('d-none');
+    }
+
+    function resetContactForm() {
+      document.getElementById('contactIdInput').value = '';
+      document.getElementById('contactForm').reset();
+      contactFormGroups = [];
+      renderContactSelectedGroups();
+      renderContactGroupSuggestions();
+      updateNotesCounter();
+      document.getElementById('contactFormTitle').innerHTML = `<i class="bi bi-person-plus-fill text-success me-2"></i>Add Guest Contact`;
+      document.getElementById('saveContactBtn').innerHTML = `<i class="bi bi-check2-circle me-1"></i> Save Contact`;
+      document.getElementById('cancelEditBtn').classList.add('d-none');
+    }
+
+    async function deleteContact(id) {
+      const c = allContacts.find(x => x.id === id);
+      if (!confirm(`Delete contact "${c ? c.name : id}"?`)) return;
+      try {
+        const res = await fetch(`/api/contacts/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          showAlert('Contact deleted.', 'secondary');
+          await loadContactsAndGroups();
+        }
+      } catch (err) {
+        showAlert('Delete failed: ' + err.message, 'danger');
+      }
+    }
+
+    async function handleCsvUpload() {
+      const fileInput = document.getElementById('csvFileInput');
+      if (!fileInput.files || fileInput.files.length === 0) {
+        showAlert('Please choose a .csv file first.', 'warning');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', fileInput.files[0]);
+
+      try {
+        const res = await fetch('/api/contacts/import', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showAlert(data.error || 'CSV import failed.', 'danger');
+          return;
+        }
+        showAlert(
+          `CSV Import Complete: ${data.imported} imported, ${data.skippedDuplicates} duplicates skipped (${data.updatedGroups} group-merged), ${data.invalidRows} invalid.`,
+          'success'
+        );
+        fileInput.value = '';
+        await loadContactsAndGroups();
+      } catch (err) {
+        showAlert('CSV Upload error: ' + err.message, 'danger');
+      }
+    }
+
+    function downloadSampleCsv() {
+      const sample = [
+        'Honorific,Name,Phone,Groups,Notes',
+        'Shri,Rajesh Sharma & Family,9876543210,"Family,Bride Side,VIP","Arriving Friday evening; 4 guests"',
+        'Smt.,Anita Verma,919812345678,"Friends,Bride Side","Vegetarian preference"',
+        'Dr.,Vikram Patel,9988776655,"Colleagues,Groom Side","Needs hotel room near venue"'
+      ].join('\r\n');
+
+      const blob = new Blob([sample], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'sample_contacts.csv';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // =========================================================================
+    // INVITATION COMPOSER: GROUPS OR INDIVIDUALS + LIVE PREVIEW
+    // =========================================================================
+    function setComposerTargetMode(mode) {
+      composerTargetMode = mode === 'individuals' ? 'individuals' : 'groups';
+      document.getElementById('composerGroupsPanel').classList.toggle('d-none', composerTargetMode !== 'groups');
+      document.getElementById('composerIndividualsPanel').classList.toggle('d-none', composerTargetMode !== 'individuals');
+      if (composerTargetMode === 'individuals') {
+        renderComposerIndividualsList();
+        renderComposerSelectedIndividualsChips();
+      } else {
+        renderComposerGroupCheckboxes();
+      }
+      updateRecipientDeduplicationPreview();
+    }
+
+    function renderComposerGroupCheckboxes() {
+      const container = document.getElementById('composerGroupCheckboxes');
+      const searchEl = document.getElementById('composerGroupSearch');
+      const filterText = (searchEl ? searchEl.value : '').trim().toLowerCase();
+
+      if (allGroups.length === 0) {
+        container.innerHTML = `<div class="text-muted small">No group tags created yet. All ${allContacts.length} contact(s) will be targeted.</div>`;
+        return;
+      }
+
+      const visibleGroups = allGroups.filter(g => !filterText || g.name.toLowerCase().includes(filterText));
+      if (visibleGroups.length === 0) {
+        container.innerHTML = `<div class="text-muted small">No groups match "${escapeHtml(searchEl.value.trim())}".</div>`;
+        return;
+      }
+
+      container.innerHTML = visibleGroups.map((g, idx) => {
+        const isChecked = Array.from(selectedComposerGroups).some(s => s.toLowerCase() === g.name.toLowerCase());
+        return `
+          <div class="form-check">
+            <input
+              class="form-check-input composer-group-cb"
+              type="checkbox"
+              value="${escapeHtml(g.name)}"
+              id="campGroup_${idx}"
+              ${isChecked ? 'checked' : ''}
+              onchange="toggleComposerGroup('${encodeURIComponent(g.name)}', this.checked)"
+            />
+            <label class="form-check-label small fw-semibold" for="campGroup_${idx}">
+              ${escapeHtml(g.name)} <span class="text-muted">(${g.count})</span>
+            </label>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function toggleComposerGroup(encodedName, isChecked) {
+      const name = decodeURIComponent(encodedName);
+      for (const existing of Array.from(selectedComposerGroups)) {
+        if (existing.toLowerCase() === name.toLowerCase()) {
+          selectedComposerGroups.delete(existing);
+        }
+      }
+      if (isChecked) {
+        selectedComposerGroups.add(name);
+      }
+      updateRecipientDeduplicationPreview();
+    }
+
+    function getSelectedComposerGroups() {
+      return Array.from(selectedComposerGroups);
+    }
+
+    function getFilteredComposerIndividuals() {
+      const searchEl = document.getElementById('composerIndividualSearch');
+      const q = (searchEl ? searchEl.value : '').trim().toLowerCase();
+      if (!q) return allContacts;
+      return allContacts.filter(c => {
+        const hay = `${c.honorific} ${c.name} ${c.phone} ${c.groups} ${c.notes || ''}`.toLowerCase();
+        return hay.includes(q);
+      });
+    }
+
+    function renderComposerIndividualsList() {
+      const container = document.getElementById('composerIndividualsList');
+      if (!container) return;
+
+      if (allContacts.length === 0) {
+        container.innerHTML = `<div class="text-center text-muted small py-3">No contacts available. Add contacts in Contact Manager first.</div>`;
+        return;
+      }
+
+      const filtered = getFilteredComposerIndividuals();
+      if (filtered.length === 0) {
+        container.innerHTML = `<div class="text-center text-muted small py-3">No contacts match your search.</div>`;
+        return;
+      }
+
+      container.innerHTML = filtered.map(c => {
+        const isSelected = selectedComposerContactIds.has(c.id);
+        const tagsHtml = (c.groupList || []).map(g => `<span class="tag-badge">${escapeHtml(g)}</span>`).join('');
+        const notesHtml = c.notes
+          ? `<div class="text-muted text-truncate" style="font-size: 0.74rem;" title="${escapeHtml(c.notes)}"><i class="bi bi-sticky me-1"></i>${escapeHtml(c.notes)}</div>`
+          : '';
+
+        return `
+          <label class="d-flex align-items-start gap-2 px-3 py-2 border-bottom individual-picker-item mb-0 ${isSelected ? 'bg-success-subtle' : ''}">
+            <input
+              type="checkbox"
+              class="form-check-input mt-1 flex-shrink-0"
+              ${isSelected ? 'checked' : ''}
+              onchange="toggleComposerIndividual(${c.id}, this.checked)"
+            />
+            <div class="flex-grow-1 overflow-hidden">
+              <div class="d-flex flex-wrap justify-content-between align-items-center gap-1">
+                <span class="small fw-semibold">
+                  ${c.honorific ? `<span class="text-secondary fw-normal">${escapeHtml(c.honorific)}</span> ` : ''}${escapeHtml(c.name)}
+                </span>
+                <code class="small">${escapeHtml(c.phone)}</code>
+              </div>
+              ${tagsHtml ? `<div class="mt-1">${tagsHtml}</div>` : ''}
+              ${notesHtml}
+            </div>
+          </label>
+        `;
+      }).join('');
+    }
+
+    function renderComposerSelectedIndividualsChips() {
+      const container = document.getElementById('composerSelectedIndividualsChips');
+      if (!container) return;
+      if (selectedComposerContactIds.size === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      const contactMap = new Map(allContacts.map(c => [c.id, c]));
+      const chips = Array.from(selectedComposerContactIds)
+        .map(id => contactMap.get(id))
+        .filter(Boolean)
+        .map(c => `
+          <span class="selected-group-chip">
+            ${escapeHtml(`${c.honorific ? c.honorific + ' ' : ''}${c.name}`)}
+            <button type="button" onclick="toggleComposerIndividual(${c.id}, false)" aria-label="Remove">&times;</button>
+          </span>
+        `).join('');
+
+      container.innerHTML = chips;
+    }
+
+    function toggleComposerIndividual(id, isChecked) {
+      if (isChecked) {
+        selectedComposerContactIds.add(id);
+      } else {
+        selectedComposerContactIds.delete(id);
+      }
+      renderComposerIndividualsList();
+      renderComposerSelectedIndividualsChips();
+      updateRecipientDeduplicationPreview();
+    }
+
+    function selectAllFilteredIndividuals() {
+      const filtered = getFilteredComposerIndividuals();
+      for (const c of filtered) {
+        selectedComposerContactIds.add(c.id);
+      }
+      renderComposerIndividualsList();
+      renderComposerSelectedIndividualsChips();
+      updateRecipientDeduplicationPreview();
+    }
+
+    function clearSelectedIndividuals() {
+      selectedComposerContactIds.clear();
+      renderComposerIndividualsList();
+      renderComposerSelectedIndividualsChips();
+      updateRecipientDeduplicationPreview();
+    }
+
+    async function updateRecipientDeduplicationPreview() {
+      const selectedGroups = getSelectedComposerGroups();
+      const contactIds = Array.from(selectedComposerContactIds);
+      const badge = document.getElementById('dedupPreviewBadge');
+      try {
+        const res = await fetch('/api/campaigns/preview-recipients', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            targetMode: composerTargetMode,
+            groups: selectedGroups,
+            contactIds
+          })
+        });
+        const data = await res.json();
+        if (composerTargetMode === 'individuals') {
+          badge.textContent = `${data.totalUniqueRecipients} Individual(s) Selected`;
+        } else {
+          const groupLabel = selectedGroups.length === 0 ? 'All Contacts' : `${selectedGroups.length} Group(s)`;
+          badge.textContent = `${data.totalUniqueRecipients} Unique Recipient(s) (${groupLabel})`;
+        }
+      } catch {
+        badge.textContent = '0 Unique Recipients';
+      }
+    }
+
+    function insertToken(token) {
+      const textarea = document.getElementById('campTemplate');
+      const start = textarea.selectionStart || 0;
+      const end = textarea.selectionEnd || 0;
+      const val = textarea.value;
+      textarea.value = val.substring(0, start) + token + val.substring(end);
+      textarea.focus();
+      textarea.selectionStart = textarea.selectionEnd = start + token.length;
+      updateLivePreview();
+    }
+
+    function renderClientTemplate(template, honorific, name) {
+      if (!template) return '';
+      const h = (honorific || '').trim();
+      const n = (name || '').trim();
+      const fullName = h ? `${h} ${n}`.trim() : n;
+
+      let out = template
+        .replace(/\{\{Honorific\}\}/gi, h)
+        .replace(/\{Honorific\}/gi, h)
+        .replace(/\{\{Name\}\}/gi, n)
+        .replace(/\{Name\}/gi, n)
+        .replace(/\{\{FullName\}\}/gi, fullName)
+        .replace(/\{FullName\}/gi, fullName);
+
+      // Resolve {Spintax|Options}
+      out = out.replace(/\{([^{}]+\|[^{}]+)\}/g, (_, group) => {
+        const opts = group.split('|');
+        return opts[Math.floor(Math.random() * opts.length)];
+      });
+
+      return out.trim();
+    }
+
+    function updateLivePreview() {
+      const template = document.getElementById('campTemplate').value;
+      const honorific = document.getElementById('previewHonorific').value;
+      const name = document.getElementById('previewName').value;
+      const rawMedia = document.getElementById('campMediaPath').value.trim().replace(/^["']+|["']+$/g, '');
+
+      const rendered = renderClientTemplate(template, honorific, name);
+      document.getElementById('previewMessageText').textContent = rendered || '(Empty message)';
+
+      const mediaBox = document.getElementById('previewMediaBox');
+      const mediaText = document.getElementById('previewMediaText');
+      if (rawMedia) {
+        mediaBox.classList.remove('d-none');
+        mediaText.textContent = rawMedia;
+      } else {
+        mediaBox.classList.add('d-none');
+      }
+    }
+
+    async function handleSendTestNow() {
+      const btn = document.getElementById('sendTestBtn');
+      const originalHtml = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Sending...`;
+
+      const payload = {
+        phone: document.getElementById('testPhoneInput').value.trim(),
+        honorific: document.getElementById('previewHonorific').value.trim(),
+        name: document.getElementById('previewName').value.trim(),
+        messageTemplate: document.getElementById('campTemplate').value,
+        mediaPath: document.getElementById('campMediaPath').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/campaigns/send-test', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showAlert(data.error || 'Test message failed.', 'danger');
+        } else {
+          showAlert(`Test invite sent to ${data.phone}!`, 'success');
+        }
+      } catch (err) {
+        showAlert('Error sending test message: ' + err.message, 'danger');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalHtml;
+      }
+    }
+
+    function toDateTimeLocalValue(isoString) {
+      if (!isoString) return '';
+      const d = new Date(isoString);
+      if (isNaN(d.getTime())) return '';
+      const pad = (n) => String(n).padStart(2, '0');
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    }
+
+    function renderSavedCampaignSelect() {
+      const select = document.getElementById('savedCampaignSelect');
+      if (!select) return;
+      const previousValue = select.value;
+
+      let html = `<option value="">— Select a saved or past campaign to edit &amp; reuse —</option>`;
+      for (const c of campaigns) {
+        const targetLabel = c.targetMode === 'individuals'
+          ? `${c.totalRecipients} individual(s)`
+          : (c.targetGroups || 'All Contacts');
+        html += `<option value="${c.id}">[${escapeHtml(c.status)}] ${escapeHtml(c.name)} (${escapeHtml(targetLabel)})</option>`;
+      }
+
+      select.innerHTML = html;
+      if (previousValue && campaigns.some(c => String(c.id) === String(previousValue))) {
+        select.value = previousValue;
+      }
+    }
+
+    function updateComposerReuseUi() {
+      const banner = document.getElementById('composerReuseBanner');
+      const bannerText = document.getElementById('composerReuseBannerText');
+      const launchBtn = document.getElementById('launchCampaignBtn');
+      const updateDraftBtn = document.getElementById('updateDraftBtn');
+
+      if (loadedCampaignSource) {
+        banner.classList.remove('d-none');
+        bannerText.innerHTML = `
+          <i class="bi bi-pencil-square me-1"></i>
+          Loaded from <strong>${escapeHtml(loadedCampaignSource.name)}</strong>
+          <span class="badge ${getStatusBadgeClass(loadedCampaignSource.status)} ms-1">${escapeHtml(loadedCampaignSource.status)}</span>
+          — Edit text, date, media, or add/remove recipients. Sending will create a <strong>new campaign</strong>.
+        `;
+        launchBtn.innerHTML = `<i class="bi bi-rocket-takeoff-fill me-1"></i> Launch / Schedule as New Campaign`;
+        updateDraftBtn.classList.toggle('d-none', loadedCampaignSource.status !== 'Draft');
+      } else {
+        banner.classList.add('d-none');
+        bannerText.innerHTML = '';
+        launchBtn.innerHTML = `<i class="bi bi-rocket-takeoff-fill me-1"></i> Create &amp; Launch / Schedule Campaign`;
+        updateDraftBtn.classList.add('d-none');
+      }
+    }
+
+    function loadSelectedSavedCampaign() {
+      const select = document.getElementById('savedCampaignSelect');
+      if (!select || !select.value) {
+        showAlert('Choose a saved or past campaign from the dropdown first.', 'warning');
+        return;
+      }
+      loadCampaignIntoComposer(Number(select.value));
+    }
+
+    async function loadCampaignIntoComposer(id) {
+      try {
+        const res = await fetch(`/api/campaigns/${id}`);
+        if (!res.ok) {
+          showAlert('Could not load campaign details.', 'danger');
+          return;
+        }
+        const c = await res.json();
+
+        document.getElementById('campName').value = c.name || '';
+        document.getElementById('campTemplate').value = c.messageTemplate || '';
+        document.getElementById('campMediaPath').value = c.mediaPath || '';
+        document.getElementById('campScheduledAt').value = c.scheduledAt ? toDateTimeLocalValue(c.scheduledAt) : '';
+
+        const groupSearch = document.getElementById('composerGroupSearch');
+        const indSearch = document.getElementById('composerIndividualSearch');
+        if (groupSearch) groupSearch.value = '';
+        if (indSearch) indSearch.value = '';
+
+        const mode = c.targetMode === 'individuals' ? 'individuals' : 'groups';
+        if (mode === 'individuals') {
+          selectedComposerGroups = new Set();
+          const savedIds = (c.targetContactIds && c.targetContactIds.length > 0)
+            ? c.targetContactIds
+            : (c.recipients || []).map(r => r.contactId).filter(Boolean);
+          const validContactIds = new Set(allContacts.map(x => x.id));
+          selectedComposerContactIds = new Set(savedIds.filter(cid => validContactIds.has(cid)));
+          document.getElementById('targetModeIndividuals').checked = true;
+        } else {
+          selectedComposerContactIds = new Set();
+          selectedComposerGroups = new Set(c.targetGroupList || []);
+          document.getElementById('targetModeGroups').checked = true;
+        }
+
+        loadedCampaignSource = { id: c.id, name: c.name, status: c.status };
+        const savedSelect = document.getElementById('savedCampaignSelect');
+        if (savedSelect) savedSelect.value = String(c.id);
+
+        setComposerTargetMode(mode);
+        updateLivePreview();
+        updateComposerReuseUi();
+
+        // Switch to Invitation Composer tab
+        const composerTabBtn = document.getElementById('tab-composer-btn');
+        bootstrap.Tab.getOrCreateInstance(composerTabBtn).show();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        showAlert(`Loaded "${c.name}" into Composer. Edit any details and launch as a new campaign or save as draft.`, 'info');
+      } catch (err) {
+        showAlert('Error loading campaign: ' + err.message, 'danger');
+      }
+    }
+
+    function resetComposerForm() {
+      loadedCampaignSource = null;
+      document.getElementById('campName').value = '';
+      document.getElementById('campMediaPath').value = '';
+      document.getElementById('campScheduledAt').value = '';
+      const groupSearch = document.getElementById('composerGroupSearch');
+      const indSearch = document.getElementById('composerIndividualSearch');
+      const savedSelect = document.getElementById('savedCampaignSelect');
+      if (groupSearch) groupSearch.value = '';
+      if (indSearch) indSearch.value = '';
+      if (savedSelect) savedSelect.value = '';
+
+      selectedComposerGroups = new Set();
+      selectedComposerContactIds = new Set();
+      document.getElementById('targetModeGroups').checked = true;
+      setComposerTargetMode('groups');
+      updateLivePreview();
+      updateComposerReuseUi();
+    }
+
+    function buildComposerPayload({ saveAsDraft = false } = {}) {
+      const name = document.getElementById('campName').value.trim();
+      const messageTemplate = document.getElementById('campTemplate').value;
+      const mediaPath = document.getElementById('campMediaPath').value.trim();
+      const scheduledInput = document.getElementById('campScheduledAt').value;
+      const groups = getSelectedComposerGroups();
+      const contactIds = Array.from(selectedComposerContactIds);
+
+      if (!name) {
+        showAlert('Campaign name is required.', 'warning');
+        return null;
+      }
+      if (!messageTemplate.trim() && !mediaPath) {
+        showAlert('Please enter an invitation message or an attachment media path.', 'warning');
+        return null;
+      }
+      if (composerTargetMode === 'individuals' && contactIds.length === 0) {
+        showAlert('Please select at least one individual contact.', 'warning');
+        return null;
+      }
+
+      let scheduledAt = null;
+      let startImmediately = !saveAsDraft;
+      if (scheduledInput) {
+        scheduledAt = new Date(scheduledInput).toISOString();
+        startImmediately = false;
+      }
+
+      return {
+        name,
+        messageTemplate,
+        mediaPath,
+        targetMode: composerTargetMode,
+        groups,
+        contactIds,
+        scheduledAt,
+        startImmediately,
+        saveAsDraft
+      };
+    }
+
+    async function handleSaveCampaignDraft(updateExisting = false) {
+      const payload = buildComposerPayload({ saveAsDraft: true });
+      if (!payload) return;
+
+      const isUpdating = updateExisting && loadedCampaignSource && loadedCampaignSource.status === 'Draft';
+      const url = isUpdating ? `/api/campaigns/${loadedCampaignSource.id}` : '/api/campaigns';
+      const method = isUpdating ? 'PUT' : 'POST';
+
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showAlert(data.error || 'Failed to save campaign draft.', 'danger');
+          return;
+        }
+
+        loadedCampaignSource = { id: data.id, name: data.name, status: data.status };
+        updateComposerReuseUi();
+        activeCampaignId = data.id;
+        await loadCampaigns();
+
+        const savedSelect = document.getElementById('savedCampaignSelect');
+        if (savedSelect) savedSelect.value = String(data.id);
+
+        showAlert(
+          isUpdating
+            ? `Draft "${data.name}" updated (${data.totalRecipients} recipient(s)).`
+            : `Saved draft "${data.name}" (${data.totalRecipients} recipient(s)). You can edit and reuse it anytime!`,
+          'success'
+        );
+      } catch (err) {
+        showAlert('Error saving draft: ' + err.message, 'danger');
+      }
+    }
+
+    async function handleCreateCampaign(e) {
+      e.preventDefault();
+      const payload = buildComposerPayload({ saveAsDraft: false });
+      if (!payload) return;
+
+      try {
+        const res = await fetch('/api/campaigns', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          showAlert(data.error || 'Failed to create campaign.', 'danger');
+          return;
+        }
+
+        const wasReused = Boolean(loadedCampaignSource);
+        showAlert(
+          wasReused
+            ? `New campaign "${data.name}" created with ${data.totalRecipients} unique recipient(s)!`
+            : `Campaign "${data.name}" created with ${data.totalRecipients} unique recipient(s)!`,
+          'success'
+        );
+
+        loadedCampaignSource = null;
+        updateComposerReuseUi();
+        document.getElementById('campName').value = '';
+        if (composerTargetMode === 'individuals') {
+          clearSelectedIndividuals();
+        }
+        activeCampaignId = data.id;
+        await loadCampaigns();
+
+        // Switch to Campaign Monitor tab
+        const monitorTabBtn = document.getElementById('tab-monitor-btn');
+        bootstrap.Tab.getOrCreateInstance(monitorTabBtn).show();
+      } catch (err) {
+        showAlert('Error creating campaign: ' + err.message, 'danger');
+      }
+    }
+
+    // =========================================================================
+    // CAMPAIGN MONITOR & RETRY FAILED
+    // =========================================================================
+    async function loadCampaigns(silent = false) {
+      try {
+        const res = await fetch('/api/campaigns');
+        campaigns = await res.json();
+
+        const activeCount = campaigns.filter(c => c.status === 'Running' || c.status === 'Scheduled').length;
+        document.getElementById('navActiveCampaigns').textContent = activeCount;
+
+        renderSavedCampaignSelect();
+        renderCampaignsList();
+
+        if (activeCampaignId) {
+          await loadCampaignDetail(activeCampaignId, true);
+        } else if (campaigns.length > 0 && !silent) {
+          activeCampaignId = campaigns[0].id;
+          await loadCampaignDetail(activeCampaignId, true);
+        }
+      } catch (err) {
+        if (!silent) showAlert('Failed to load campaigns: ' + err.message, 'danger');
+      }
+    }
+
+    function getStatusBadgeClass(status) {
+      switch (status) {
+        case 'Running': return 'bg-primary';
+        case 'Scheduled': return 'bg-info text-dark';
+        case 'Completed': return 'bg-success';
+        case 'Paused': return 'bg-warning text-dark';
+        case 'Failed': return 'bg-danger';
+        case 'Sent': return 'bg-success';
+        case 'Sending': return 'bg-primary';
+        default: return 'bg-secondary';
+      }
+    }
+
+    function renderCampaignsList() {
+      const container = document.getElementById('campaignsListContainer');
+      if (campaigns.length === 0) {
+        container.innerHTML = `<div class="text-center text-muted py-4">No campaigns created yet.</div>`;
+        return;
+      }
+
+      container.innerHTML = campaigns.map(c => {
+        const isSelected = c.id === activeCampaignId;
+        const pct = c.totalRecipients > 0
+          ? Math.round(((c.sentCount + c.failedCount) / c.totalRecipients) * 100)
+          : 0;
+
+        return `
+          <div class="p-3 rounded border ${isSelected ? 'border-primary bg-light shadow-sm' : 'bg-white'}"
+               style="cursor: pointer;" onclick="selectCampaign(${c.id})">
+            <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+              <h6 class="fw-bold mb-0">${escapeHtml(c.name)}</h6>
+              <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary py-0 px-1"
+                  onclick="event.stopPropagation(); loadCampaignIntoComposer(${c.id})"
+                  title="Edit &amp; Reuse as New Campaign"
+                >
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <span class="badge ${getStatusBadgeClass(c.status)}">${escapeHtml(c.status)}</span>
+              </div>
+            </div>
+            <div class="small text-muted mb-2">
+              Target: <strong>${escapeHtml(c.targetGroups || 'All Contacts')}</strong>
+              ${c.scheduledAt ? `<span class="ms-2"><i class="bi bi-clock me-1"></i>${new Date(c.scheduledAt).toLocaleString()}</span>` : ''}
+            </div>
+            <div class="progress mb-2" style="height: 7px;">
+              <div class="progress-bar bg-success" style="width: ${c.totalRecipients ? (c.sentCount / c.totalRecipients) * 100 : 0}%"></div>
+              <div class="progress-bar bg-danger" style="width: ${c.totalRecipients ? (c.failedCount / c.totalRecipients) * 100 : 0}%"></div>
+            </div>
+            <div class="d-flex justify-content-between small text-secondary">
+              <span>
+                <span class="text-success fw-semibold">${c.sentCount} Sent</span> &bull;
+                <span class="text-danger fw-semibold">${c.failedCount} Failed</span> &bull;
+                <span>${c.pendingCount} Pending</span>
+              </span>
+              <span>${pct}%</span>
+            </div>
+            ${c.currentActivity ? `<div class="small text-primary mt-1 text-truncate"><i class="bi bi-activity me-1"></i>${escapeHtml(c.currentActivity)}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function selectCampaign(id) {
+      activeCampaignId = id;
+      renderCampaignsList();
+      await loadCampaignDetail(id);
+    }
+
+    async function loadCampaignDetail(id, silent = false) {
+      const container = document.getElementById('campaignDetailContainer');
+      try {
+        const res = await fetch(`/api/campaigns/${id}`);
+        if (!res.ok) return;
+        const c = await res.json();
+
+        const canPause = c.status === 'Running';
+        const canStart = (c.status === 'Paused' || c.status === 'Draft' || c.status === 'Scheduled') && c.pendingCount > 0;
+        const canRetry = c.failedCount > 0;
+
+        const recipientsRows = (c.recipients || []).map(r => `
+          <tr>
+            <td>
+              <span class="text-muted small">${escapeHtml(r.honorific)}</span>
+              <span class="fw-semibold">${escapeHtml(r.name)}</span>
+              <div class="small text-muted"><code>${escapeHtml(r.phone)}</code></div>
+            </td>
+            <td>
+              <span class="badge ${getStatusBadgeClass(r.status)}">${escapeHtml(r.status)}</span>
+              ${r.sentAt ? `<div class="text-muted" style="font-size: 0.72rem;">${new Date(r.sentAt).toLocaleTimeString()}</div>` : ''}
+            </td>
+            <td class="small">
+              ${r.errorMessage
+                ? `<div class="text-danger fw-semibold"><i class="bi bi-exclamation-triangle-fill me-1"></i>${escapeHtml(r.errorMessage)}</div>`
+                : `<div class="text-muted text-truncate" style="max-width: 260px;" title="${escapeHtml(r.resolvedMessage)}">${escapeHtml(r.resolvedMessage)}</div>`
+              }
+            </td>
+          </tr>
+        `).join('');
+
+        container.innerHTML = `
+          <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-3 pb-3 border-bottom">
+            <div>
+              <div class="d-flex align-items-center gap-2">
+                <h5 class="fw-bold mb-0">${escapeHtml(c.name)}</h5>
+                <span class="badge ${getStatusBadgeClass(c.status)}">${escapeHtml(c.status)}</span>
+              </div>
+              <div class="small text-secondary mt-1">
+                ${c.currentActivity ? `<span class="text-primary fw-semibold"><i class="bi bi-hourglass-split me-1"></i>${escapeHtml(c.currentActivity)}</span>` : ''}
+                ${c.scheduledAt ? `<span class="ms-2"><i class="bi bi-clock me-1"></i>Scheduled: ${new Date(c.scheduledAt).toLocaleString()}</span>` : ''}
+              </div>
+            </div>
+
+            <div class="d-flex flex-wrap gap-2">
+              <button class="btn btn-sm btn-outline-primary fw-semibold" onclick="loadCampaignIntoComposer(${c.id})" title="Load into Composer to edit and send as a new campaign">
+                <i class="bi bi-pencil-square me-1"></i> Edit &amp; Reuse
+              </button>
+              ${canStart ? `
+                <button class="btn btn-sm btn-success fw-semibold" onclick="campaignAction(${c.id}, 'start')">
+                  <i class="bi bi-play-fill me-1"></i> Start / Resume
+                </button>` : ''}
+              ${canPause ? `
+                <button class="btn btn-sm btn-warning fw-semibold" onclick="campaignAction(${c.id}, 'pause')">
+                  <i class="bi bi-pause-fill me-1"></i> Pause
+                </button>` : ''}
+              <button class="btn btn-sm btn-danger fw-semibold" ${!canRetry ? 'disabled' : ''} onclick="retryFailedRecipients(${c.id})">
+                <i class="bi bi-arrow-repeat me-1"></i> Retry Failed (${c.failedCount})
+              </button>
+              <button class="btn btn-sm btn-outline-secondary" onclick="deleteCampaign(${c.id})" title="Delete Campaign">
+                <i class="bi bi-trash"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Summary Counters -->
+          <div class="row g-2 mb-3 text-center">
+            <div class="col-3">
+              <div class="p-2 rounded bg-light border">
+                <div class="fs-5 fw-bold">${c.totalRecipients}</div>
+                <div class="text-muted small">Total Unique</div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="p-2 rounded bg-light border">
+                <div class="fs-5 fw-bold text-success">${c.sentCount}</div>
+                <div class="text-muted small">Sent</div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="p-2 rounded bg-light border">
+                <div class="fs-5 fw-bold text-danger">${c.failedCount}</div>
+                <div class="text-muted small">Failed</div>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="p-2 rounded bg-light border">
+                <div class="fs-5 fw-bold text-secondary">${c.pendingCount}</div>
+                <div class="text-muted small">Pending</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Per-Recipient Table -->
+          <div class="table-responsive" style="max-height: 430px;">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th>Recipient</th>
+                  <th>Status</th>
+                  <th>Message Preview / Exact Error</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${recipientsRows}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } catch (err) {
+        if (!silent) showAlert('Error loading campaign details: ' + err.message, 'danger');
+      }
+    }
+
+    async function campaignAction(id, action) {
+      try {
+        const res = await fetch(`/api/campaigns/${id}/${action}`, { method: 'POST' });
+        const data = await res.json();
+        if (!res.ok) {
+          showAlert(data.error || `Failed to ${action} campaign.`, 'danger');
+          return;
+        }
+        await loadCampaigns();
+      } catch (err) {
+        showAlert('Action error: ' + err.message, 'danger');
+      }
+    }
+
+    async function retryFailedRecipients(id) {
+      try {
+        const res = await fetch(`/api/campaigns/${id}/retry-failed`, { method: 'POST' });
+        const data = await res.json();
+        if (!res.ok) {
+          showAlert(data.error || 'Could not retry failed recipients.', 'danger');
+          return;
+        }
+        showAlert(`Re-queued ${data.retriedCount} failed recipient(s) for sending!`, 'info');
+        await loadCampaigns();
+      } catch (err) {
+        showAlert('Retry error: ' + err.message, 'danger');
+      }
+    }
+
+    async function deleteCampaign(id) {
+      if (!confirm('Delete this campaign and its recipient logs?')) return;
+      try {
+        const res = await fetch(`/api/campaigns/${id}`, { method: 'DELETE' });
+        if (res.ok) {
+          activeCampaignId = null;
+          document.getElementById('campaignDetailContainer').innerHTML = `
+            <div class="text-center text-muted py-5">
+              <i class="bi bi-bar-chart-steps fs-1 d-block mb-2"></i>
+              Select a campaign on the left to inspect per-recipient delivery status, exact error logs, and retry failed sends.
+            </div>`;
+          await loadCampaigns();
+        }
+      } catch (err) {
+        showAlert('Failed to delete campaign: ' + err.message, 'danger');
+      }
+    }
+  </script>
+</body>
+</html>
